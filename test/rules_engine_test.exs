@@ -2,11 +2,17 @@ defmodule RulesEngineTest do
   use ExUnit.Case
   use Agent
 
-  alias RulesEngine.Rule
-  alias RulesEngine, as: RE
-  alias RulesEngine.InferenceRulesEngine, as: IRE
-  alias RulesEngine.RulesEngineParameters, as: REP
-  alias RulesEngine.RuleGroup, as: RG
+  use RulesEngine
+
+  # alias RulesEngine.Rule
+  # alias RulesEngine, as: RE
+  # alias RulesEngine.InferenceRulesEngine, as: IRE
+  # alias RulesEngine.RulesEngineParameters, as: REP
+  # alias RulesEngine.RuleGroup, as: RG
+
+  alias InferenceRulesEngine, as: IRE
+  alias RulesEngineParameters, as: REP
+  alias RuleGroup, as: RG
 
   @moduletag :rules_engine
 
@@ -62,7 +68,7 @@ defmodule RulesEngineTest do
 
       facts = %{}
 
-      assert catch_throw(RE.fire(REP.default_rules_engine_parameters(), rules, facts)) == "Hello World"
+      assert catch_throw(fire(REP.default_rules_engine_parameters(), rules, facts)) == "Hello World"
     end
 
     test "simple multi rule", %{rule1: rule1, rule2: rule2, rule3: rule3, params1: params} do
@@ -78,10 +84,10 @@ defmodule RulesEngineTest do
       Agent.start_link(fn -> "" end, name: __MODULE__)
 
       facts = %{number: 7}
-      RE.fire(params, rules, facts)
+      fire(params, rules, facts)
 
       facts = %{number: 12}
-      RE.fire(params, rules, facts)
+      fire(params, rules, facts)
 
       {:ok, check} = File.read(@simple_multi_rule_check_filepath)
       assert Agent.get(__MODULE__, & &1) == check
@@ -95,7 +101,7 @@ defmodule RulesEngineTest do
       Agent.start_link(fn -> "" end, name: __MODULE__)
 
       for n <- [-2, 2, 7, 12] do
-        RE.fire(params, rules, %{number: n})
+        fire(params, rules, %{number: n})
       end
 
       {:ok, check} = File.read(@reduced_priority_multi_rule_check_filepath)
@@ -162,7 +168,7 @@ defmodule RulesEngineTest do
       rules = Rule.add_rules([fizz_rule, buzz_rule, fizz_buzz_rule, non_fizz_buzz_rule])
 
       for n <- 1..100 do
-        RE.fire(params, rules, %{number: n})
+        fire(params, rules, %{number: n})
         write_to_agent("\n")
       end
 
@@ -197,7 +203,7 @@ defmodule RulesEngineTest do
 
       assert hvac == %{system: :off, temperature: 65, thermostat: 70, plus_minus: 2}
 
-      IRE.fire(params, rules, facts)
+      IRE.inference_fire(params, rules, facts)
 
       assert get_hvac(hvac_table, :system) == :off
       assert get_hvac(hvac_table, :temperature) == 71
@@ -207,7 +213,7 @@ defmodule RulesEngineTest do
       # set initial HVAC state
       set_hvac(hvac_table, :off, 78, 70, 2)
 
-      IRE.fire(params, rules, facts)
+      IRE.inference_fire(params, rules, facts)
 
       assert get_hvac(hvac_table, :system) == :off
       assert get_hvac(hvac_table, :temperature) == 69

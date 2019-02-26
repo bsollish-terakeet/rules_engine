@@ -1,5 +1,5 @@
 defmodule FizzBuzzExample.FizzBuzzWithRulesEngine do
-  alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
+  use RulesEngine
 
   def main() do
     # RulesEngineParameters
@@ -38,7 +38,7 @@ defmodule FizzBuzzExample.FizzBuzzWithRulesEngine do
     # run our rules engine 100 times - with values (number facts) from 1 to 100 (inclusive)
     for n <- 1..100 do
       facts = %{number: n}
-      RulesEngine.fire(params, rules, facts)
+      fire(params, rules, facts)
       IO.puts("")
     end
   end
