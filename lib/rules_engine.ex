@@ -3,98 +3,59 @@ defmodule RulesEngine do
   a Rules Engine that applies rules according to their natural order (which is priority by default).
   """
 
-  alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
-
   defmacro __using__(_) do
     quote do
       alias RulesEngine.Rule
       alias RulesEngine.RuleGroup
       alias RulesEngine.RulesEngineParameters
-
-      def fire(params, rules, facts) do
-        sorted_rules = sort_rules(rules)
-        pre_skip_rules = get_pre_skip_rules(params, sorted_rules, facts)
-
-        # we still need to check for failed actions
-        if params.skip_on_first_failed_rule do
-          do_rules_until_failure(pre_skip_rules, facts)
-        else
-          do_rules(pre_skip_rules, facts)
-        end
-      end
-
-      @doc """
-      will sort the rules (map) by priority with lowest priority value coming first. Will return a list.
-      """
-      def sort_rules(rules) do
-        Map.to_list(rules) |> Keyword.values() |> Enum.sort(&(Map.get(&1, :priority) <= Map.get(&2, :priority)))
-      end
-
-      @doc """
-      to implement the "skip_on..." parameters, we need to do
-      an Enum.take_while first, to get the rules that will happen BEFORE the skip,
-      and then do an Enum.each (or similar) to process them
-      """
-      def get_pre_skip_rules(params, sorted_rules, facts) do
-        Enum.reduce_while(sorted_rules, [], fn(rule, acc) ->
-          if rule.priority < params.rule_priority_threshold do
-            case {params.skip_on_first_applied_rule, params.skip_on_first_non_triggered_rule} do
-              {true,  true } -> {:halt, acc ++ [rule]}      # always skip
-              {false, false} -> {:cont, acc ++ [rule]}    # never skip
-              {_,     true } -> if applies?(rule, facts) do {:cont, acc ++ [rule]} else {:halt, acc ++ [rule]} end
-              {true,  _    } -> if applies?(rule, facts) do {:halt, acc ++ [rule]} else {:cont, acc ++ [rule]} end
-            end
-          else
-            {:halt, acc}
-          end
-        end)
-      end
     end
   end
 
-  # @doc """
-  # will fire (run) the provided rules against the provided facts on a RulesEngine which
-  # has been set up with the provided (RulesEngine) parameters.
-  # """
-  # @spec fire(RulesEngineParameters.t, [Rule.t], map) :: any()
-  # def fire(params, rules, facts) do
-  #   sorted_rules = sort_rules(rules)
-  #   pre_skip_rules = get_pre_skip_rules(params, sorted_rules, facts)
-  #
-  #   # we still need to check for failed actions
-  #   if params.skip_on_first_failed_rule do
-  #     do_rules_until_failure(pre_skip_rules, facts)
-  #   else
-  #     do_rules(pre_skip_rules, facts)
-  #   end
-  # end
-  #
-  # @doc """
-  # will sort the rules (map) by priority with lowest priority value coming first. Will return a list.
-  # """
-  # def sort_rules(rules) do
-  #   Map.to_list(rules) |> Keyword.values() |> Enum.sort(&(Map.get(&1, :priority) <= Map.get(&2, :priority)))
-  # end
-  #
-  # @doc """
-  # to implement the "skip_on..." parameters, we need to do
-  # an Enum.take_while first, to get the rules that will happen BEFORE the skip,
-  # and then do an Enum.each (or similar) to process them
-  # """
-  # def get_pre_skip_rules(params, sorted_rules, facts) do
-  #   Enum.reduce_while(sorted_rules, [], fn(rule, acc) ->
-  #     if rule.priority < params.rule_priority_threshold do
-  #       case {params.skip_on_first_applied_rule, params.skip_on_first_non_triggered_rule} do
-  #         {true,  true } -> {:halt, acc ++ [rule]}      # always skip
-  #         {false, false} -> {:cont, acc ++ [rule]}    # never skip
-  #         {_,     true } -> if applies?(rule, facts) do {:cont, acc ++ [rule]} else {:halt, acc ++ [rule]} end
-  #         {true,  _    } -> if applies?(rule, facts) do {:halt, acc ++ [rule]} else {:cont, acc ++ [rule]} end
-  #       end
-  #     else
-  #       {:halt, acc}
-  #     end
-  #   end)
-  # end
+  alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
+
+  @doc """
+  will fire (run) the provided rules against the provided facts on a RulesEngine which
+  has been set up with the provided (RulesEngine) parameters.
+  """
+  @spec fire(RulesEngineParameters.t, [Rule.t], map) :: any()
+  def fire(params, rules, facts) do
+    sorted_rules = sort_rules(rules)
+    pre_skip_rules = get_pre_skip_rules(params, sorted_rules, facts)
+
+    # we still need to check for failed actions
+    if params.skip_on_first_failed_rule do
+      do_rules_until_failure(pre_skip_rules, facts)
+    else
+      do_rules(pre_skip_rules, facts)
+    end
+  end
+
+  @doc """
+  will sort the rules (map) by priority with lowest priority value coming first. Will return a list.
+  """
+  def sort_rules(rules) do
+    Map.to_list(rules) |> Keyword.values() |> Enum.sort(&(Map.get(&1, :priority) <= Map.get(&2, :priority)))
+  end
+
+  @doc """
+  to implement the "skip_on..." parameters, we need to do
+  an Enum.take_while first, to get the rules that will happen BEFORE the skip,
+  and then do an Enum.each (or similar) to process them
+  """
+  def get_pre_skip_rules(params, sorted_rules, facts) do
+    Enum.reduce_while(sorted_rules, [], fn(rule, acc) ->
+      if rule.priority < params.rule_priority_threshold do
+        case {params.skip_on_first_applied_rule, params.skip_on_first_non_triggered_rule} do
+          {true,  true } -> {:halt, acc ++ [rule]}      # always skip
+          {false, false} -> {:cont, acc ++ [rule]}    # never skip
+          {_,     true } -> if applies?(rule, facts) do {:cont, acc ++ [rule]} else {:halt, acc ++ [rule]} end
+          {true,  _    } -> if applies?(rule, facts) do {:halt, acc ++ [rule]} else {:cont, acc ++ [rule]} end
+        end
+      else
+        {:halt, acc}
+      end
+    end)
+  end
 
   defp applies?(rule, facts) do
     case rule do
