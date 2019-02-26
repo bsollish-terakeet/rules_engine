@@ -30,6 +30,8 @@ end
 
 ## Fizz-Buzz Example
 
+(Look at test/rules_engine_test.exs for more examples)
+
 ```elixir
 defmodule FizzBuzzWithRulesEngine do
   def main() do
