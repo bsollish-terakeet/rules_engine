@@ -10,7 +10,13 @@ defmodule RulesEngine.MixProject do
       package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      source_url: "https://github.com/bsollish-terakeet/rules_engine"
+      name: "RulesEngine",
+      source_url: "https://github.com/bsollish-terakeet/rules_engine",
+      homepage_url: "https://github.com/bsollish-terakeet/rules_engine",
+      docs: [
+        main: "RulesEngine", # The main page in the docs
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -22,7 +28,7 @@ defmodule RulesEngine.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps() do
     [
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:ex_doc, "~>0.18.0", only: :dev}
     ]
   end
 
