@@ -1,4 +1,4 @@
-defmodule RuleGroup do
+defmodule RulesEngine.RuleGroup do
   @moduledoc """
   UnitRuleGroup: A unit rule group is a composite rule that acts as a unit:
   Either all rules are applied or nothing is applied.
@@ -12,9 +12,11 @@ defmodule RuleGroup do
   evaluates to true, then the rest of the rules are fired.
   """
 
+  alias __MODULE__
+
   @types [:unit_rule_group, :activation_rule_group, :conditional_rule_group]
 
-  alias Rule
+  alias RulesEngine.Rule
 
   defstruct name: "",
             description: "",

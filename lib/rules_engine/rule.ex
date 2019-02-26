@@ -1,4 +1,5 @@
-defmodule Rule do
+defmodule RulesEngine.Rule do
+  alias __MODULE__
 
   defstruct name: "",
             description: "",

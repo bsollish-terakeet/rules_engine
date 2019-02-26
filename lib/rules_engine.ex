@@ -3,9 +3,7 @@ defmodule RulesEngine do
   a Rules Engine that applies rules according to their natural order (which is priority by default).
   """
 
-  alias RulesEngineParameters
-  alias Rule
-  alias RuleGroup
+  alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
 
   @doc """
   will fire (run) the provided rules against the provided facts on a RulesEngine which

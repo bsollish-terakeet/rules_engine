@@ -1,10 +1,9 @@
-defmodule InferenceRulesEngine do
+defmodule RulesEngine.InferenceRulesEngine do
   @moduledoc """
   a Rules Engine that continuously applies rules on known facts until no more rules are applicable.
   """
 
-  alias RulesEngineParameters
-  alias Rule
+  alias RulesEngine.{Rule, RulesEngineParameters}
   alias RulesEngine, as: RE
 
   @spec fire(RulesEngineParameters.t, [Rule.t], map) :: any()

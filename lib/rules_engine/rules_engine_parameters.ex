@@ -1,4 +1,4 @@
-defmodule RulesEngineParameters do
+defmodule RulesEngine.RulesEngineParameters do
   @moduledoc """
   For reference from https://github.com/j-easy/easy-rules/wiki/defining-rules-engine
   Parameter	                    Type	   Required	 Default
@@ -13,6 +13,8 @@ defmodule RulesEngineParameters do
   The rulePriorityThreshold parameter tells the engine to skip next rules if priority exceeds the defined threshold.
   """
 
+  alias __MODULE__
+  
   defstruct rule_priority_threshold: 1_000_000_000,
             skip_on_first_applied_rule: false,
             skip_on_first_failed_rule: false,
@@ -24,8 +26,6 @@ defmodule RulesEngineParameters do
           skip_on_first_failed_rule: boolean(),
           skip_on_first_non_triggered_rule: boolean()
         }
-
-  alias __MODULE__
 
   def default_rules_engine_parameters() do
     %RulesEngineParameters{}

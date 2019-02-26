@@ -1,4 +1,6 @@
-defmodule FizzBuzzWithRulesEngine do
+defmodule FizzBuzzExample.FizzBuzzWithRulesEngine do
+  alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
+
   def main() do
     # RulesEngineParameters
     params = RulesEngineParameters.create(%{skip_on_first_applied_rule: true})
@@ -9,13 +11,13 @@ defmodule FizzBuzzWithRulesEngine do
       name: "FizzRule",
       priority: 1,
       condition: fn(facts) -> rem(facts.number, 5) == 0 end,
-      actions: [IO.puts("fizz")]}
+      actions: [fn(_facts) -> IO.write("fizz") end]}
 
     buzz_rule = %Rule{
       name: "BuzzRule",
       priority: 2,
       condition: fn(facts) -> rem(facts.number, 7) == 0 end,
-      actions: [IO.puts("buzz")]}
+      actions: [fn(_facts) -> IO.write("buzz") end]}
 
     fizz_buzz_rule = RuleGroup.create(%{
       name: "FizzBuzzRule",
@@ -27,7 +29,7 @@ defmodule FizzBuzzWithRulesEngine do
       name: "NonFizzBuzzRule",
       priority: 3,
       condition: fn(facts) -> rem(facts.number, 5) != 0 || rem(facts.number, 7) != 0 end,
-      actions: [fn(facts) -> IO.puts(Kernel.inspect(facts.number)) end]}
+      actions: [fn(facts) -> IO.write(Kernel.inspect(facts.number)) end]}
     # --------------------------------------------
 
     # create set of rules

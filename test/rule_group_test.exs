@@ -1,9 +1,9 @@
 defmodule RuleGroupTest do
   use ExUnit.Case
 
-  alias Rule
-  alias RuleGroup, as: RG
-  alias RulesEngineTest, as: RET
+  alias RulesEngine.Rule
+  alias RulesEngine.RuleGroup, as: RG
+  alias RulesEngine.RulesEngineTest, as: RET
 
   @moduletag :rules_engine
 

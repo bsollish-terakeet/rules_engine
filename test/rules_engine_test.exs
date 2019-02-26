@@ -2,11 +2,11 @@ defmodule RulesEngineTest do
   use ExUnit.Case
   use Agent
 
-  alias Rule
+  alias RulesEngine.Rule
   alias RulesEngine, as: RE
-  alias InferenceRulesEngine, as: IRE
-  alias RulesEngineParameters, as: REP
-  alias RuleGroup, as: RG
+  alias RulesEngine.InferenceRulesEngine, as: IRE
+  alias RulesEngine.RulesEngineParameters, as: REP
+  alias RulesEngine.RuleGroup, as: RG
 
   @moduletag :rules_engine
 
@@ -65,7 +65,6 @@ defmodule RulesEngineTest do
       assert catch_throw(RE.fire(REP.default_rules_engine_parameters(), rules, facts)) == "Hello World"
     end
 
-    @tag :RWS1
     test "simple multi rule", %{rule1: rule1, rule2: rule2, rule3: rule3, params1: params} do
       rules = Rule.add_rule(rule1)
       rules = Rule.add_rule(rule2, rules)
