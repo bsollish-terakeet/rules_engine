@@ -3,6 +3,14 @@ defmodule RulesEngine do
   a Rules Engine that applies rules according to their natural order (which is priority by default).
   """
 
+  defmacro __using__(_) do
+    quote do
+      alias RulesEngine.Rule
+      alias RulesEngine.RuleGroup
+      alias RulesEngine.RulesEngineParameters
+    end
+  end
+
   alias RulesEngine.{Rule, RuleGroup, RulesEngineParameters}
 
   @doc """
