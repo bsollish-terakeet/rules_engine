@@ -1,0 +1,9 @@
+{application,rules_engine,
+             [{applications,[kernel,stdlib,elixir,logger]},
+              {description,"rules_engine"},
+              {modules,['Elixir.InferenceRulesEngine','Elixir.Rule',
+                        'Elixir.RuleGroup','Elixir.RulesEngine',
+                        'Elixir.RulesEngineParameters']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {extra_applications,[logger]}]}.

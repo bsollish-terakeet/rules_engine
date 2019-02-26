@@ -1,0 +1,16 @@
+Greater_than_zero_rule (7)
+___Greater than zero (1)
+___Greater than zero (2)
+___Greater than zero (3)
+Greater_than_five_rule (7)
+___Greater than five
+Greater_than_ten_rule (7)
+Greater_than_zero_rule (12)
+___Greater than zero (1)
+___Greater than zero (2)
+___Greater than zero (3)
+Greater_than_five_rule (12)
+___Greater than five
+Greater_than_ten_rule (12)
+___Greater than ten (1)
+___Greater than ten (2)
