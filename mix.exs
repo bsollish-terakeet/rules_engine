@@ -4,7 +4,7 @@ defmodule RulesEngine.MixProject do
   def project() do
     [
       app: :rules_engine,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.6",
       description: description(),
       package: package(),
