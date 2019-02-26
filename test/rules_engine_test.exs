@@ -67,11 +67,11 @@ defmodule RulesEngineTest do
 
     @tag :RWS1
     test "simple multi rule", %{rule1: rule1, rule2: rule2, rule3: rule3, params1: params} do
-      rules = add_rule(rule1)
-      rules = add_rule(rule2, rules)
-      rules = add_rule(rule3, rules)
+      rules = Rule.add_rule(rule1)
+      rules = Rule.add_rule(rule2, rules)
+      rules = Rule.add_rule(rule3, rules)
 
-      rules2 = add_rules([rule1, rule2, rule3])
+      rules2 = Rule.add_rules([rule1, rule2, rule3])
 
       # confirm both methods yield the same result
       assert rules == rules2
@@ -91,7 +91,7 @@ defmodule RulesEngineTest do
     end
 
     test "simple multi rule - with reduced priority threshold", %{rule1: rule1, rule2: rule2, rule3: rule3, params2: params} do
-      rules = add_rules([rule1, rule2, rule3])
+      rules = Rule.add_rules([rule1, rule2, rule3])
 
       Agent.start_link(fn -> "" end, name: __MODULE__)
 
@@ -160,7 +160,7 @@ defmodule RulesEngineTest do
         condition: fn(facts) -> rem(facts.number, 5) != 0 || rem(facts.number, 7) != 0 end,
         actions: [fn(facts) -> Agent.update(__MODULE__, &(&1 <> Kernel.inspect(facts.number))) end]}
 
-      rules = add_rules([fizz_rule, buzz_rule, fizz_buzz_rule, non_fizz_buzz_rule])
+      rules = Rule.add_rules([fizz_rule, buzz_rule, fizz_buzz_rule, non_fizz_buzz_rule])
 
       for n <- 1..100 do
         RE.fire(params, rules, %{number: n})
@@ -180,7 +180,7 @@ defmodule RulesEngineTest do
       # create ets table for HVAC
       hvac_table = :ets.new(:hvac_table, [])
 
-      rules = add_rules([
+      rules = Rule.add_rules([
         %Rule{name: "StartCoolingRule", priority: 2, condition: &start_cooling_rule/1, actions: [&start_cooling_action/1]},
         %Rule{name: "StopCoolingRule",  priority: 0, condition: &stop_cooling_rule/1,  actions: [&stop_cooling_action/1] },
         %Rule{name: "StartHeatingRule", priority: 2, condition: &start_heating_rule/1, actions: [&start_heating_action/1]},
@@ -325,13 +325,5 @@ defmodule RulesEngineTest do
   def succeeds(), do: :ok
 
   def fails(), do: {:error, "reason"}
-
-  def add_rule(rule, rules_map \\ %{}) do
-    Map.put(rules_map, String.to_atom(rule.name), rule)
-  end
-
-  def add_rules(rules_list) do
-    Enum.reduce(rules_list, %{}, fn(rule, rules) -> add_rule(rule, rules) end)
-  end
 
 end

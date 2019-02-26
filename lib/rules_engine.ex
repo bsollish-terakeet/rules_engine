@@ -7,6 +7,10 @@ defmodule RulesEngine do
   alias Rule
   alias RuleGroup
 
+  @doc """
+  will fire (run) the provided rules against the provided facts on a RulesEngine which
+  has been set up with the provided (RulesEngine) parameters.
+  """
   @spec fire(RulesEngineParameters.t, [Rule.t], map) :: any()
   def fire(params, rules, facts) do
     sorted_rules = sort_rules(rules)
@@ -20,9 +24,12 @@ defmodule RulesEngine do
     end
   end
 
-def sort_rules(rules) do
-  Map.to_list(rules) |> Keyword.values() |> Enum.sort(&(Map.get(&1, :priority) <= Map.get(&2, :priority)))
-end
+  @doc """
+  will sort the rules (map) by priority with lowest priority value coming first. Will return a list.
+  """
+  def sort_rules(rules) do
+    Map.to_list(rules) |> Keyword.values() |> Enum.sort(&(Map.get(&1, :priority) <= Map.get(&2, :priority)))
+  end
 
   @doc """
   to implement the "skip_on..." parameters, we need to do

@@ -14,4 +14,11 @@ defmodule Rule do
           actions: [function()]
         }
 
+  def add_rule(rule, rules_map \\ %{}) do
+    Map.put(rules_map, String.to_atom(rule.name), rule)
+  end
+
+  def add_rules(rules_list) do
+    Enum.reduce(rules_list, %{}, fn(rule, rules) -> add_rule(rule, rules) end)
+  end
 end
