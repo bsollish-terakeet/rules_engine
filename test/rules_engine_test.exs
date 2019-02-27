@@ -4,12 +4,6 @@ defmodule RulesEngineTest do
 
   use RulesEngine
 
-  # alias RulesEngine.Rule
-  # alias RulesEngine, as: RE
-  # alias RulesEngine.InferenceRulesEngine, as: IRE
-  # alias RulesEngine.RulesEngineParameters, as: REP
-  # alias RulesEngine.RuleGroup, as: RG
-
   alias InferenceRulesEngine, as: IRE
   alias RulesEngineParameters, as: REP
   alias RuleGroup, as: RG
