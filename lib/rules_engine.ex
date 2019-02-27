@@ -80,9 +80,11 @@ defmodule RulesEngine do
 
       defp do_rule(rule, facts) do
         if rule.condition.(facts) do
-          for func <- rule.actions do
-            func.(facts)
-          end
+          result =
+            for func <- rule.actions do
+              func.(facts)
+            end
+          {String.to_atom(rule.name), result}
         end
       end
 

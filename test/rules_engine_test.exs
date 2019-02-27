@@ -44,8 +44,14 @@ defmodule RulesEngineTest do
     %{rule1: rule1, rule2: rule2, rule3: rule3, params1: params1, params2: params2}
   end
 
-  setup do
-    %{}
+  test "fire returns action result" do
+    rule = %Rule{name: "rule zero",
+                  priority: 1,
+                  condition: fn(_x) -> true end,
+                  actions: [fn(_x) -> "monkey" end]}
+
+    ["rule zero": [action_result]] = fire(REP.default_rules_engine_parameters(), Rule.add_rule(rule), %{})
+    assert action_result == "monkey"
   end
 
   describe "rules engine" do
@@ -81,7 +87,9 @@ defmodule RulesEngineTest do
       fire(params, rules, facts)
 
       facts = %{number: 12}
-      fire(params, rules, facts)
+      result = fire(params, rules, facts)
+
+      assert result == ["rule one": [:ok, :ok, :ok], "rule three": [:ok], "rule two": [:ok, :ok]]
 
       {:ok, check} = File.read(@simple_multi_rule_check_filepath)
       assert Agent.get(__MODULE__, & &1) == check
